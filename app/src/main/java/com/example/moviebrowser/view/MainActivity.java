@@ -1,8 +1,10 @@
-package com.example.moviebrowser;
+package com.example.moviebrowser.view;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+
+import com.example.moviebrowser.R;
 
 public class MainActivity extends AppCompatActivity {
 
