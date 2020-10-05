@@ -9,8 +9,10 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.moviebrowser.R;
+import com.example.moviebrowser.constants.Constants;
 import com.example.moviebrowser.model.MoviesModel;
 
 import java.util.List;
@@ -18,105 +20,60 @@ import java.util.List;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class MoviesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.ViewHolder> {
     Context context;
-    List<MoviesModel> moviesResult;
-    private static final int LOADING = 0;
-    private static final int ITEM = 1;
-    private boolean isLoadingAdded = false;
+    List<MoviesModel.Result> moviesResult;
 
-    public MoviesAdapter(Context context, List<MoviesModel> moviesResult) {
+    public MoviesAdapter(Context context, List<MoviesModel.Result> moviesResult) {
         this.context = context;
         this.moviesResult = moviesResult;
     }
 
     @NonNull
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        RecyclerView.ViewHolder vh = null;
-        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        switch (viewType) {
-            case ITEM:
-                View viewItem = inflater.inflate(R.layout.row_layout, parent, false);
-                vh = new MovieViewHolder(viewItem);
-                break;
-          /*  case LOADING:
-                View viewLoading = inflater.inflate(R.layout.item_progress, parent, false);
-                vh = new LoadingViewHolder(viewLoading);
-                break;*/
-        }
-        return vh;
+    public MoviesAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_layout, parent, false);
+        return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        MoviesModel movie = moviesResult.get(position);
-        switch (getItemViewType(position)) {
-            case ITEM:
-                MovieViewHolder movieViewHolder = (MovieViewHolder) holder;
-              //  movieViewHolder.movieTitle.setText(movie.getTitle());
-               // Glide.with(context).load(movie.getImageUrl()).apply(RequestOptions.centerCropTransform()).into(movieViewHolder.movieImage);
-                break;
+    public void onBindViewHolder(@NonNull MoviesAdapter.ViewHolder holder, int position) {
+        if (moviesResult.get(position).getOriginalTitle() != null && !moviesResult.get(position).getOriginalTitle().isEmpty() && !moviesResult.get(position).getOriginalTitle().equals("")) {
+            holder.text_title.setVisibility(View.VISIBLE);
+            holder.text_title.setText(moviesResult.get(position).getOriginalTitle());
+        } else {
+            holder.text_title.setVisibility(View.GONE);
+        }
 
-            case LOADING:
-                //LoadingViewHolder loadingViewHolder = (LoadingViewHolder) holder;
-                //loadingViewHolder.progressBar.setVisibility(View.VISIBLE);
-                break;
+        if (moviesResult.get(position).getPosterPath() != null && !moviesResult.get(position).getPosterPath().isEmpty() && !moviesResult.get(position).getPosterPath().equals("")) {
+            holder.iv_Poster.setVisibility(View.VISIBLE);
+            String poster_path = Constants.POSTER_PATH + moviesResult.get(position).getPosterPath();
+            Glide.with(context)
+                    .load(poster_path)
+                    .apply(new RequestOptions()
+                            .diskCacheStrategy(DiskCacheStrategy.NONE)
+                            .skipMemoryCache(true))
+                    .into(holder.iv_Poster);
+        } else {
+            holder.iv_Poster.setVisibility(View.GONE);
         }
     }
 
     @Override
     public int getItemCount() {
-        return moviesResult == null ? 0 : moviesResult.size();
+        return moviesResult.size();
     }
 
-    @Override
-    public int getItemViewType(int position) {
-        return (position == moviesResult.size() - 1 && isLoadingAdded) ? LOADING : ITEM;
-    }
+    public class ViewHolder extends RecyclerView.ViewHolder {
+        ImageView iv_Poster;
+        TextView text_title;
 
-    public void addLoadingFooter() {
-        isLoadingAdded = true;
-        add(new MoviesModel());
-    }
-
-    public void removeLoadingFooter() {
-        isLoadingAdded = false;
-
-        int position = moviesResult.size() - 1;
-        MoviesModel result = getItem(position);
-
-        if (result != null) {
-            moviesResult.remove(position);
-            notifyItemRemoved(position);
-        }
-    }
-
-    public void add(MoviesModel movie) {
-        moviesResult.add(movie);
-        notifyItemInserted(moviesResult.size() - 1);
-    }
-
-    public void addAll(List<MoviesModel> moveResults) {
-        for (MoviesModel result : moveResults) {
-            add(result);
-        }
-    }
-
-    public MoviesModel getItem(int position) {
-        return moviesResult.get(position);
-    }
-
-    public class MovieViewHolder extends RecyclerView.ViewHolder {
-        private TextView movie_title;
-        private ImageView movie_poster;
-
-        public MovieViewHolder(@NonNull View itemView) {
+        public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            movie_title = itemView.findViewById(R.id.movie_title);
-            movie_poster = itemView.findViewById(R.id.movie_poster);
+            text_title = itemView.findViewById(R.id.text_title);
+            iv_Poster = itemView.findViewById(R.id.iv_Poster);
+            text_title.setSelected(true);
         }
     }
-
 }

@@ -10,6 +10,7 @@ import retrofit2.Response;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.ProgressBar;
 
 import com.example.moviebrowser.R;
@@ -30,6 +31,8 @@ public class MainActivity extends AppCompatActivity {
     List<MoviesModel.Result> moviesResult;
     MoviesAdapter moviesAdapter;
     ProgressBar progressbar;
+    boolean isAPICalled;
+    int pageNo = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,14 +42,16 @@ public class MainActivity extends AppCompatActivity {
 
         initView();
 
-        getMoviesListing();
+        getMoviesListing(true);
     }
 
-    private void getMoviesListing() {
-
+    private void getMoviesListing(boolean isFirst) {
+        if (isFirst) {
+            moviesResult = new ArrayList<>();
+        }
         HashMap<String,String> map = new HashMap<>();
         map.put("api_key", Constants.API_KEY);
-        map.put("page","1");
+        map.put("page",pageNo+"");
         JsonPlaceHolderApi apiService = ApiClientMain.getClient().create(JsonPlaceHolderApi.class);
         Call<MoviesModel> call = apiService.getMoviesData(map);
 
@@ -54,16 +59,29 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<MoviesModel> call, Response<MoviesModel> response) {
                 final MoviesModel rsp = response.body();
-                moviesResult = rsp.getResults();
+                if (rsp.getResults() != null) {
+                    if (rsp.getResults().size() > 0) {
+                        isAPICalled = true;
+                        if (moviesResult.size() == 0) {
+                            moviesResult = rsp.getResults();
+                            Log.d("TAG","Response ="+moviesResult);
+                            moviesAdapter = new MoviesAdapter(context,moviesResult);
+                            rv_movies.setAdapter(moviesAdapter);
+                        } else {
+                            moviesResult.addAll(rsp.getResults());
+                            moviesAdapter.notifyDataSetChanged();
+                        }
+                    }
+                }
 
-                Log.d("TAG","Response ="+moviesResult);
-              //  moviesAdapter  = new MoviesAdapter(context,moviesResult);
-                rv_movies.setAdapter(moviesAdapter);
+                progressbar.setVisibility(View.GONE);
+
             }
 
             @Override
             public void onFailure(Call<MoviesModel> call, Throwable t) {
-                //Log.d("TAG","Response = "+t.toString());
+                Log.d("TAG","Response = "+t.toString());
+                progressbar.setVisibility(View.GONE);
             }
         });
     }
@@ -71,30 +89,30 @@ public class MainActivity extends AppCompatActivity {
     private void initView() {
 
         rv_movies = findViewById(R.id.rv_movies);
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(getApplicationContext(),2);
-        rv_movies.setLayoutManager(gridLayoutManager);
+        final GridLayoutManager lm = new GridLayoutManager(context, 3);
+        rv_movies.setLayoutManager(lm);
 
         progressbar = findViewById(R.id.progressbar);
 
-       /* rv_movies.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        rv_movies.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
-                if (isNeedToNextCall) {
-                    if (!recyclerView.canScrollVertically(1)) {
-                        int visibleItemCount = gridLayoutManager.getChildCount();
-                        int totalItemCount = gridLayoutManager.getItemCount();
-                        int firstVisibleItemPosition = gridLayoutManager.findFirstVisibleItemPosition();
-
-                        if ((visibleItemCount + firstVisibleItemPosition) >= totalItemCount && firstVisibleItemPosition >= 0 && isAPICalled) {
-                            isAPICalled = false;
-                            pageNo += 1;
-                            SpaList(preferences.getPreferenceValues(Constants.LATITUDE), preferences.getPreferenceValues(Constants.LONGITUDE), tab_id, pageNo);
-                        }
+                if (!recyclerView.canScrollVertically(1)) {
+                    int visibleItemCount = lm.getChildCount();
+                    int totalItemCount = lm.getItemCount();
+                    int firstVisibleItemPosition = lm.findFirstVisibleItemPosition();
+                    if ((visibleItemCount + firstVisibleItemPosition) >= totalItemCount
+                            && firstVisibleItemPosition >= 0
+                            && isAPICalled) {
+                        isAPICalled = false;
+                        pageNo += 1;
+                        progressbar.setVisibility(View.VISIBLE);
+                        getMoviesListing(false);
                     }
                 }
             }
-        });*/
+        });
 
     }
 }

@@ -7,9 +7,10 @@ import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
+import retrofit2.http.QueryMap;
 
 public interface JsonPlaceHolderApi {
 
-    @GET("posts")
-    Call<MoviesModel> getMoviesData(Map<String, String> options);
+    @GET("movie/now_playing")
+    Call<MoviesModel> getMoviesData(@QueryMap Map<String, String> options);
 }
