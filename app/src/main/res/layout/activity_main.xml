@@ -1,10 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
+<LinearLayout android:orientation="vertical"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
+
+    <LinearLayout
+        android:id="@+id/llSearch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:orientation="horizontal"
+        android:visibility="visible">
+        <LinearLayout
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_marginTop="10dp">
+
+            <ImageView
+                android:id="@+id/img_sort"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_gravity="center"
+                android:layout_margin="5dp"
+                android:padding="5dp"
+                android:src="@drawable/sort" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_margin="10dp"
+            android:layout_weight="1"
+            android:background="@drawable/rounded_grey_border"
+            android:gravity="center"
+            android:padding="2dp">
+
+            <LinearLayout
+                android:id="@+id/llsearch"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:weightSum="1">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.9"
+                    android:orientation="horizontal">
+
+                    <androidx.appcompat.widget.SearchView
+                        android:id="@+id/searchView"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@null"
+                        android:backgroundTint="@color/white"
+                        android:focusable="true"
+                        android:visibility="visible"
+                        app:queryBackground="@color/white"
+                        app:theme="@style/AppSearchView" />
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_movies"
         android:layout_width="match_parent"
@@ -17,4 +79,4 @@
         android:layout_gravity="center"
         android:visibility="gone"/>
 
-</FrameLayout>
+</LinearLayout>

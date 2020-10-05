@@ -7,11 +7,16 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.RadioButton;
+import android.widget.TextView;
 
 import com.example.moviebrowser.R;
 import com.example.moviebrowser.adapter.MoviesAdapter;
@@ -28,11 +33,13 @@ import java.util.Map;
 public class MainActivity extends AppCompatActivity {
     Context context;
     RecyclerView rv_movies;
+    ImageView img_sort;
     List<MoviesModel.Result> moviesResult;
     MoviesAdapter moviesAdapter;
     ProgressBar progressbar;
     boolean isAPICalled;
     int pageNo = 1;
+    TextView txt_most_popular,txt_highest;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,6 +95,13 @@ public class MainActivity extends AppCompatActivity {
 
     private void initView() {
 
+        img_sort = findViewById(R.id.img_sort);
+        img_sort.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dailog_popup(context);
+            }
+        });
         rv_movies = findViewById(R.id.rv_movies);
         final GridLayoutManager lm = new GridLayoutManager(context, 3);
         rv_movies.setLayoutManager(lm);
@@ -114,5 +128,18 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    private void dailog_popup(Context context) {
+        AlertDialog.Builder builder1 = new AlertDialog.Builder(context);
+        LayoutInflater inflater = getLayoutInflater();
+        View view = inflater.inflate(R.layout.dialog_sort_layout, null);
+        builder1.setView(view);
+        builder1.setCancelable(true);
+        AlertDialog alert11 = builder1.create();
+        alert11.show();
+        
+        txt_most_popular = view.findViewById(R.id.txt_most_popular);
+        txt_highest = view.findViewById(R.id.txt_highest);
     }
 }
