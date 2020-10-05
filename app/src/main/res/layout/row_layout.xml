@@ -7,14 +7,15 @@
     android:layout_margin="5dp"
     app:cardCornerRadius="5dp">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="wrap_content">
         <ImageView
             android:id="@+id/iv_Poster"
             android:layout_width="100dp"
             android:layout_height="170dp"
+            android:visibility="visible"
+            android:layout_centerHorizontal="true"
             android:layout_gravity="center" />
 
         <TextView
@@ -26,8 +27,9 @@
             android:textSize="16sp"
             android:ellipsize="marquee"
             android:fadingEdge="horizontal"
+            android:layout_alignParentBottom="true"
             android:marqueeRepeatLimit="marquee_forever"
             android:scrollHorizontally="true"
             android:singleLine="true"/>
-    </LinearLayout>
+    </RelativeLayout>
 </androidx.cardview.widget.CardView>
