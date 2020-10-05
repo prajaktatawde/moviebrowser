@@ -1,6 +1,8 @@
 package com.example.moviebrowser.adapter;
 
 import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,10 +16,13 @@ import com.bumptech.glide.request.RequestOptions;
 import com.example.moviebrowser.R;
 import com.example.moviebrowser.constants.Constants;
 import com.example.moviebrowser.model.MoviesModel;
+import com.example.moviebrowser.view.MoviesDetailActivity;
 
+import java.io.Serializable;
 import java.util.List;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.ViewHolder> {
@@ -38,16 +43,17 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.ViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull MoviesAdapter.ViewHolder holder, int position) {
-        if (moviesResult.get(position).getOriginalTitle() != null && !moviesResult.get(position).getOriginalTitle().isEmpty() && !moviesResult.get(position).getOriginalTitle().equals("")) {
+        final MoviesModel.Result movies_data = moviesResult.get(position);
+        if (movies_data.getOriginalTitle() != null && !movies_data.getOriginalTitle().isEmpty() && !movies_data.getOriginalTitle().equals("")) {
             holder.text_title.setVisibility(View.VISIBLE);
-            holder.text_title.setText(moviesResult.get(position).getOriginalTitle());
+            holder.text_title.setText(movies_data.getOriginalTitle());
         } else {
             holder.text_title.setVisibility(View.GONE);
         }
 
-        if (moviesResult.get(position).getPosterPath() != null && !moviesResult.get(position).getPosterPath().isEmpty() && !moviesResult.get(position).getPosterPath().equals("")) {
+        if (movies_data.getPosterPath() != null && !movies_data.getPosterPath().isEmpty() && !movies_data.getPosterPath().equals("")) {
             holder.iv_Poster.setVisibility(View.VISIBLE);
-            String poster_path = Constants.POSTER_PATH + moviesResult.get(position).getPosterPath();
+            String poster_path = Constants.POSTER_PATH + movies_data.getPosterPath();
             Glide.with(context)
                     .load(poster_path)
                     .apply(new RequestOptions()
@@ -57,6 +63,17 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.ViewHolder
         } else {
             holder.iv_Poster.setVisibility(View.GONE);
         }
+
+        holder.main.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, MoviesDetailActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("data", movies_data);
+                intent.putExtras(bundle);
+                context.startActivity(intent);
+            }
+        });
     }
 
     @Override
@@ -67,6 +84,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.ViewHolder
     public class ViewHolder extends RecyclerView.ViewHolder {
         ImageView iv_Poster;
         TextView text_title;
+        CardView main;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -74,6 +92,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.ViewHolder
             text_title = itemView.findViewById(R.id.text_title);
             iv_Poster = itemView.findViewById(R.id.iv_Poster);
             text_title.setSelected(true);
+            main = itemView.findViewById(R.id.main);
         }
     }
 }
