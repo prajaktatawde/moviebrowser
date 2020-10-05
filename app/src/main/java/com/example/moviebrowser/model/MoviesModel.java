@@ -52,7 +52,7 @@ public class MoviesModel implements Serializable {
         this.results = results;
     }
 
-    public class Result implements Serializable{
+    public class Result implements Serializable {
         @SerializedName("popularity")
         @Expose
         private double popularity;

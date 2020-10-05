@@ -27,7 +27,7 @@ public class MoviesDetailActivity extends AppCompatActivity {
     Context context;
     Bundle bundle;
     ImageView expandedImage;
-    TextView tvTitle,tvDescription,rating,release_date;
+    TextView tvTitle, tvDescription, rating, release_date;
     Animation myAnim;
     Toolbar mToolbar;
     CollapsingToolbarLayout collapsingToolbarLayout = null;
@@ -57,9 +57,9 @@ public class MoviesDetailActivity extends AppCompatActivity {
         Date today = new Date();
         SimpleDateFormat format = new SimpleDateFormat("dd, MMMM yyyy");
         String dateToStr = format.format(today);
-        release_date.setText("Release Date : "+dateToStr);
-        String stringdouble= Double.toString(movieModel.getVoteAverage());
-        rating.setText("Vote : "+stringdouble);
+        release_date.setText("Release Date : " + dateToStr);
+        String stringdouble = Double.toString(movieModel.getVoteAverage());
+        rating.setText("Vote : " + stringdouble);
         String poster_path = Constants.POSTER_PATH + movieModel.getPosterPath();
         Glide.with(context)
                 .load(poster_path)
@@ -98,7 +98,7 @@ public class MoviesDetailActivity extends AppCompatActivity {
         }
 
         public float getInterpolation(float time) {
-            return (float) (-1 * Math.pow(Math.E, -time/ mAmplitude) *
+            return (float) (-1 * Math.pow(Math.E, -time / mAmplitude) *
                     Math.cos(mFrequency * time) + 1);
         }
     }
