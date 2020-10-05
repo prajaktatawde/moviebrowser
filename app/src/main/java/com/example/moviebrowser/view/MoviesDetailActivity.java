@@ -51,7 +51,9 @@ public class MoviesDetailActivity extends AppCompatActivity {
 
     private void setData() {
 
+        tvTitle.setText(movieModel.getOriginalTitle());
         tvDescription.setText(movieModel.getOverview());
+        collapsingToolbarLayout.setTitle(movieModel.getOriginalTitle());
         Date today = new Date();
         SimpleDateFormat format = new SimpleDateFormat("dd, MMMM yyyy");
         String dateToStr = format.format(today);
@@ -82,7 +84,6 @@ public class MoviesDetailActivity extends AppCompatActivity {
         rating = findViewById(R.id.rating);
 
         tvTitle = findViewById(R.id.tvTitle);
-        tvTitle.setText(movieModel.getOriginalTitle());
         expandedImage = findViewById(R.id.expandedImage);
 
     }

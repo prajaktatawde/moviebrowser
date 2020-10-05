@@ -13,4 +13,13 @@ public interface JsonPlaceHolderApi {
 
     @GET("movie/now_playing")
     Call<MoviesModel> getMoviesData(@QueryMap Map<String, String> options);
+
+    @GET("movie/popular")
+    Call<MoviesModel> getMoviesData_popular(@QueryMap Map<String, String> options);
+
+    @GET("movie/top_rated")
+    Call<MoviesModel> getMoviesData_toprated(@QueryMap Map<String, String> options);
+
+    @GET("search/movie")
+    Call<MoviesModel> getMoviesData_search(@QueryMap Map<String, String> options);
 }
